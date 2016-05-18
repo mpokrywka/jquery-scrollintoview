@@ -6,7 +6,7 @@
     "Robert Koritnik"
   ],
   "dependencies": {
-    "jquery": ">=1.4"
+    "jquery": ">=1.8"
   },
   "license": "MIT",
   "keywords": [
@@ -14,7 +14,7 @@
     "scroll",
     "scrollintoview"
   ],
-  "homepage": "https://github.com/adamtal3/jquery-scrollintoview",
+  "homepage": "https://github.com/mpokrywka/jquery-scrollintoview",
   "moduleType": [
     "amd"
   ]

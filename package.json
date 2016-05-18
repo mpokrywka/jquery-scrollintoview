@@ -1,14 +1,14 @@
 {
   "name": "jquery.scrollintoview",
-  "version": "1.9.4",
+  "version": "2.0.0",
   "description": "jQuery scrollintoview() plugin and :scrollable selector filter",
   "main": "jquery.scrollintoview.js",
   "dependencies": {
-    "jquery": ">=1.4"
+    "jquery": ">=1.8"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adamtal3/jquery-scrollintoview.git"
+    "url": "git+https://github.com/mpokrywka/jquery-scrollintoview.git"
   },
   "keywords": [
     "jquery",
@@ -18,7 +18,7 @@
   "author": "Robert Koritnik",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/adamtal3/jquery-scrollintoview/issues"
+    "url": "https://github.com/mpokrywka/jquery-scrollintoview/issues"
   },
-  "homepage": "https://github.com/adamtal3/jquery-scrollintoview#readme"
+  "homepage": "https://github.com/mpokrywka/jquery-scrollintoview#readme"
 }

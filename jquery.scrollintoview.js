@@ -1,8 +1,8 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 1.9.4 (06 April 2016)
- * Requires jQuery 1.4 or newer
+ * Version 2.0.0 (18 May 2016)
+ * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
  * Licensed under the terms of the MIT license
