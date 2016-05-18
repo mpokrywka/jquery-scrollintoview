@@ -23,14 +23,14 @@ And that's it really. This is of course if we use defaults. It also supports som
     * **y** or **vertical**
     * **both** - scrolling will perform in both directions; since scrolling is performed only when element is actually out of view this simply means that scrolling may only perform in one direction even though you set it to scroll in both directions; *both* is therefore the most reliable scrolling option that will make sure your element will be visible
 * **viewPadding** (default: 0) - when positioning the element to scroll into view, this value (in pixels) is applied to the outside of the element so that some space is visible around the element. This can be a single number that applies to both directions, or it can be an object with **x** and/or **y** values.
-* **complete** function - this is the complete handler function that will get called when scrolling completes; it runs in context of scrollable element; this function will be called regardless whether scrolling will perform or not (when element already in view); *but* it won't get called when there's no scrollable element (context can't be determined)
+* **complete** function - this is the complete handler function that will get called when scrolling completes; it runs in context of scrollable element; this function will be called regardless whether scrolling will perform or not (when element already in view); *but* it won't get called when there's no scrollable element (context can't be determined); handler is given argument indicating if scroll was successfull (**true**), interrupted by user (**false**) or not performed at all (**null**).
 
 ```javascript
 $("some_selector").scrollintoview({
     duration: 2500,
     direction: "vertical",
     viewPadding: { y: 10 },
-    complete: function() {
+    complete: function(scroll_complete) {
         // highlight the element so user's focus gets where it needs to be
     }
 });

@@ -151,10 +151,11 @@
                     scrollExpect[tween.prop] = Math.floor(now);
                 };
 
+                var scroll_complete = true;
                 function onscroll(event) {
                     $.each(scrollExpect, function(key, value) {
                         if (Math.floor(scrollListener[key]()) != Math.floor(value)) {
-                            options.complete = null; // don't run complete function if the scrolling was interrupted
+                            scroll_complete = false;
                             scroller.stop('scrollintoview');
                         }
                     });
@@ -172,14 +173,14 @@
                     .eq(0) // we want function to be called just once (ref. "html,body")
                     .queue('scrollintoview', function(next) {
                         scrollListener.off('scroll', onscroll);
-                        $.isFunction(options.complete) && options.complete.call(scroller[0]);
+                        $.isFunction(options.complete) && options.complete.call(scroller[0], scroll_complete);
                         next();
                     })
 
                 scroller.dequeue('scrollintoview');
             } else {
                 // when there's nothing to scroll, just call the "complete" function
-                $.isFunction(options.complete) && options.complete.call(scroller[0]);
+                $.isFunction(options.complete) && options.complete.call(scroller[0], null);
             }
         }
 
