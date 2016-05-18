@@ -123,8 +123,12 @@
             if (options.direction.y === true) {
                 if (rel.top < 0) {
                     animProperties.scrollTop = Math.max(0, dim.s.scroll.top + rel.top - options.viewPadding.y);
-                } else if (rel.top > 0 && rel.bottom < 0) {
-                    animProperties.scrollTop = Math.min(dim.s.scroll.top + Math.min(rel.top, -rel.bottom) + options.viewPadding.y, dim.s.scroll.maxtop);
+                } else if (rel.top > 0) {
+                    if (options.alwaysTop) {
+                        animProperties.scrollTop = Math.min(dim.s.scroll.top + rel.top + options.viewPadding.y, dim.s.scroll.maxtop);
+                    } else if (rel.bottom < 0) {
+                        animProperties.scrollTop = Math.min(dim.s.scroll.top + Math.min(rel.top, -rel.bottom) + options.viewPadding.y, dim.s.scroll.maxtop);
+                    }
                 }
             }
 
@@ -132,8 +136,12 @@
             if (options.direction.x === true) {
                 if (rel.left < 0) {
                     animProperties.scrollLeft = Math.max(0, dim.s.scroll.left + rel.left - options.viewPadding.x);
-                } else if (rel.left > 0 && rel.right < 0) {
-                    animProperties.scrollLeft = Math.min(dim.s.scroll.left + Math.min(rel.left, -rel.right) + options.viewPadding.x, dim.s.scroll.maxleft);
+                } else if (rel.left > 0) {
+                    if (options.alwaysLeft) {
+                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + rel.left + options.viewPadding.x, dim.s.scroll.maxleft);
+                    } else if (rel.right < 0) {
+                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + Math.min(rel.left, -rel.right) + options.viewPadding.x, dim.s.scroll.maxleft);
+                    }
                 }
             }
 

@@ -18,7 +18,11 @@
 				});
 				$("a.first").click(function(e){
 					e.preventDefault();
-					$("p").scrollintoview({ duration: "normal", complete: notify });
+					$("p:first").scrollintoview({ duration: "normal", complete: notify });
+				});
+				$("a.first-top").click(function(e){
+					e.preventDefault();
+					$("p:first").scrollintoview({ duration: 5000, alwaysTop: true, complete: notify });
 				});
 			});
 		</script>
@@ -54,10 +58,15 @@
 			color: #fcc;
 			font-weight: bold;
 		}
+		a {
+			margin-right: 10px;
+		}
 		</style>
 	</head>
 	<body>
 		<a href="#" class="last">Scroll slowly to last paragraph</a>
+		<a href="#" class="first">Scroll slowly to first paragraph (should not do anything because first paragraph is fully visible)</a>
+		<a href="#" class="first-top">Scroll first paragraph to top, even if fully visible</a>
 		<p class="first">
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim elit eu neque ultrices nec convallis dui lacinia. Sed ultricies pellentesque fermentum. Quisque erat felis, sagittis fringilla auctor eget, vulputate posuere sem. Donec fermentum mauris eget nunc vehicula gravida. Pellentesque orci nunc, malesuada quis imperdiet nec, tincidunt non dui. Vestibulum iaculis varius risus, in blandit libero dignissim in. Maecenas eros quam, volutpat vel faucibus sit amet, accumsan at nulla. Praesent massa metus, malesuada vitae sodales dapibus, commodo in nunc. Nullam lacinia mollis aliquet. Donec nunc lorem, luctus in dictum vel, tempus sed eros. Phasellus lobortis tincidunt ultrices. Mauris fringilla lacinia massa, vitae lobortis lorem accumsan vel. Suspendisse scelerisque justo dolor. Etiam rhoncus, justo eget consectetur placerat, nisl dui egestas enim, ut consectetur dui tellus sit amet orci. Proin non dolor velit, mollis dictum urna. Aliquam erat volutpat. Nullam tempus tempor viverra. Donec ac arcu mauris. Etiam commodo elit quis mauris egestas eleifend at eget lorem. 
 		</p>
