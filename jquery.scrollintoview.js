@@ -27,12 +27,6 @@
         y: { x: false, y: true }
     };
 
-    var settings = {
-        duration: "fast",
-        direction: "both",
-        viewPadding: 0
-    };
-
     var rootrx = /^(?:html)$/i;
 
     // gets border dimensions
@@ -77,119 +71,126 @@
         };
     };
 
-    $.fn.extend({
-        scrollintoview: function(options) {
-            /// <summary>Scrolls the first element in the set into view by scrolling its closest scrollable parent.</summary>
-            /// <param name="options" type="Object">Additional options that can configure scrolling:
-            ///        duration (default: "fast") - jQuery animation speed (can be a duration string or number of milliseconds)
-            ///        direction (default: "both") - select possible scrollings ("vertical" or "y", "horizontal" or "x", "both")
-            ///        complete (default: none) - a function to call when scrolling completes (called in context of the DOM element being scrolled)
-            /// </param>
-            /// <return type="jQuery">Returns the same jQuery set that this function was run on.</return>
+    $.fn.scrollintoview = function scrollintoview(options) {
+        /// <summary>Scrolls the first element in the set into view by scrolling its closest scrollable parent.</summary>
+        /// <param name="options" type="Object">Additional options that can configure scrolling:
+        ///        duration (default: "fast") - jQuery animation speed (can be a duration string or number of milliseconds)
+        ///        direction (default: "both") - select possible scrollings ("vertical" or "y", "horizontal" or "x", "both")
+        ///        complete (default: none) - a function to call when scrolling completes (called in context of the DOM element being scrolled)
+        /// </param>
+        /// <return type="jQuery">Returns the same jQuery set that this function was run on.</return>
 
-            options = $.extend({}, settings, options);
-            options.direction = converter[typeof (options.direction) === "string" && options.direction.toLowerCase()] || converter.both;
+        options = $.extend({}, scrollintoview.DEFAULTS, options);
+        options.direction = converter[typeof (options.direction) === "string" && options.direction.toLowerCase()] || converter.both;
 
-            if (typeof options.viewPadding == "number") {
-                options.viewPadding = { x: options.viewPadding, y: options.viewPadding };
-            } else if (typeof options.viewPadding == "object") {
-                if (options.viewPadding.x == undefined) {
-                    options.viewPadding.x = 0;
-                }
-                if (options.viewPadding.y == undefined) {
-                    options.viewPadding.y = 0;
-                }
+        if (typeof options.viewPadding == "number") {
+            options.viewPadding = { x: options.viewPadding, y: options.viewPadding };
+        } else if (typeof options.viewPadding == "object") {
+            if (options.viewPadding.x == undefined) {
+                options.viewPadding.x = 0;
             }
-
-            var dirStr = "";
-            if (options.direction.x === true) dirStr = "horizontal";
-            if (options.direction.y === true) dirStr = dirStr ? "both" : "vertical";
-
-            var el = this.eq(0);
-            var scroller = el.parent().closest(":scrollable(" + dirStr + ")");
-
-            // check if there's anything to scroll in the first place
-            if (scroller.length > 0) {
-                scroller = scroller.eq(0);
-
-                var dim = {
-                    e: dimensions(el),
-                    s: dimensions(scroller)
-                };
-
-                var rel = {
-                    top: dim.e.rect.top - (dim.s.rect.top + dim.s.border.top),
-                    bottom: dim.s.rect.bottom - dim.s.border.bottom - dim.s.scrollbar.bottom - dim.e.rect.bottom,
-                    left: dim.e.rect.left - (dim.s.rect.left + dim.s.border.left),
-                    right: dim.s.rect.right - dim.s.border.right - dim.s.scrollbar.right - dim.e.rect.right
-                };
-
-                var animProperties = {};
-
-                // vertical scroll
-                if (options.direction.y === true) {
-                    if (rel.top < 0) {
-                        animProperties.scrollTop = Math.max(0, dim.s.scroll.top + rel.top - options.viewPadding.y);
-                    } else if (rel.top > 0 && rel.bottom < 0) {
-                        animProperties.scrollTop = Math.min(dim.s.scroll.top + Math.min(rel.top, -rel.bottom) + options.viewPadding.y, dim.s.scroll.maxtop);
-                    }
-                }
-
-                // horizontal scroll
-                if (options.direction.x === true) {
-                    if (rel.left < 0) {
-                        animProperties.scrollLeft = Math.max(0, dim.s.scroll.left + rel.left - options.viewPadding.x);
-                    } else if (rel.left > 0 && rel.right < 0) {
-                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + Math.min(rel.left, -rel.right) + options.viewPadding.x, dim.s.scroll.maxleft);
-                    }
-                }
-
-                // scroll if needed
-                if (!$.isEmptyObject(animProperties)) {
-                    var scrollExpect = {},
-                        scrollListener = scroller;
-
-                    if (rootrx.test(scroller[0].nodeName)) {
-                        scroller = $("html,body");
-                        scrollListener = $(window);
-                    }
-
-                    function animateStep(now, tween) {
-                        scrollExpect[tween.prop] = Math.floor(now);
-                    };
-
-                    function onscroll(event) {
-                        $.each(scrollExpect, function(key, value) {
-                            if (Math.floor(scrollListener[key]()) != Math.floor(value)) {
-                                options.complete = null; // don't run complete function if the scrolling was interrupted
-                                scroller.stop('scrollintoview');
-                            }
-                        });
-                    }
-
-                    scrollListener.on('scroll', onscroll);
-
-                    scroller
-                        .stop('scrollintoview')
-                        .animate(animProperties, { duration: options.duration, step: animateStep, queue: 'scrollintoview' })
-                        .eq(0) // we want function to be called just once (ref. "html,body")
-                        .queue('scrollintoview', function(next) {
-                            scrollListener.off('scroll', onscroll);
-                            $.isFunction(options.complete) && options.complete.call(scroller[0]);
-                            next();
-                        })
-
-                    scroller.dequeue('scrollintoview');
-                } else {
-                    // when there's nothing to scroll, just call the "complete" function
-                    $.isFunction(options.complete) && options.complete.call(scroller[0]);
-                }
+            if (options.viewPadding.y == undefined) {
+                options.viewPadding.y = 0;
             }
-
-            // return set back
-            return this;
         }
-    });
+
+        var dirStr = "";
+        if (options.direction.x === true) dirStr = "horizontal";
+        if (options.direction.y === true) dirStr = dirStr ? "both" : "vertical";
+
+        var el = this.eq(0);
+        var scroller = el.parent().closest(":scrollable(" + dirStr + ")");
+
+        // check if there's anything to scroll in the first place
+        if (scroller.length > 0) {
+            scroller = scroller.eq(0);
+
+            var dim = {
+                e: dimensions(el),
+                s: dimensions(scroller)
+            };
+
+            var rel = {
+                top: dim.e.rect.top - (dim.s.rect.top + dim.s.border.top),
+                bottom: dim.s.rect.bottom - dim.s.border.bottom - dim.s.scrollbar.bottom - dim.e.rect.bottom,
+                left: dim.e.rect.left - (dim.s.rect.left + dim.s.border.left),
+                right: dim.s.rect.right - dim.s.border.right - dim.s.scrollbar.right - dim.e.rect.right
+            };
+
+            var animProperties = {};
+
+            // vertical scroll
+            if (options.direction.y === true) {
+                if (rel.top < 0) {
+                    animProperties.scrollTop = Math.max(0, dim.s.scroll.top + rel.top - options.viewPadding.y);
+                } else if (rel.top > 0 && rel.bottom < 0) {
+                    animProperties.scrollTop = Math.min(dim.s.scroll.top + Math.min(rel.top, -rel.bottom) + options.viewPadding.y, dim.s.scroll.maxtop);
+                }
+            }
+
+            // horizontal scroll
+            if (options.direction.x === true) {
+                if (rel.left < 0) {
+                    animProperties.scrollLeft = Math.max(0, dim.s.scroll.left + rel.left - options.viewPadding.x);
+                } else if (rel.left > 0 && rel.right < 0) {
+                    animProperties.scrollLeft = Math.min(dim.s.scroll.left + Math.min(rel.left, -rel.right) + options.viewPadding.x, dim.s.scroll.maxleft);
+                }
+            }
+
+            // scroll if needed
+            if (!$.isEmptyObject(animProperties)) {
+                var scrollExpect = {},
+                    scrollListener = scroller;
+
+                if (rootrx.test(scroller[0].nodeName)) {
+                    scroller = $("html,body");
+                    scrollListener = $(window);
+                }
+
+                function animateStep(now, tween) {
+                    scrollExpect[tween.prop] = Math.floor(now);
+                };
+
+                function onscroll(event) {
+                    $.each(scrollExpect, function(key, value) {
+                        if (Math.floor(scrollListener[key]()) != Math.floor(value)) {
+                            options.complete = null; // don't run complete function if the scrolling was interrupted
+                            scroller.stop('scrollintoview');
+                        }
+                    });
+                }
+
+                scrollListener.on('scroll', onscroll);
+
+                scroller
+                    .stop('scrollintoview')
+                    .animate(animProperties, {
+                        duration: options.duration,
+                        step: animateStep,
+                        queue: 'scrollintoview'
+                    })
+                    .eq(0) // we want function to be called just once (ref. "html,body")
+                    .queue('scrollintoview', function(next) {
+                        scrollListener.off('scroll', onscroll);
+                        $.isFunction(options.complete) && options.complete.call(scroller[0]);
+                        next();
+                    })
+
+                scroller.dequeue('scrollintoview');
+            } else {
+                // when there's nothing to scroll, just call the "complete" function
+                $.isFunction(options.complete) && options.complete.call(scroller[0]);
+            }
+        }
+
+        // return set back
+        return this;
+    };
+    $.fn.scrollintoview.DEFAULTS = {
+        duration: "fast",
+        direction: "both",
+        viewPadding: 0
+    };
 
     var scrollValue = {
         auto: true,
