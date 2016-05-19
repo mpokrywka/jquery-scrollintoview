@@ -1,7 +1,7 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 2.0.2 (19 May 2016)
+ * Version 2.0.3 (19 May 2016)
  * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
@@ -83,16 +83,22 @@
         options = $.extend({}, scrollintoview.DEFAULTS, options);
         options.direction = converter[typeof (options.direction) === "string" && options.direction.toLowerCase()] || converter.both;
 
-        if (typeof options.viewPadding == "number") {
-            options.viewPadding = { x: options.viewPadding, y: options.viewPadding };
-        } else if (typeof options.viewPadding == "object") {
-            if (options.viewPadding.x == undefined) {
-                options.viewPadding.x = 0;
-            }
-            if (options.viewPadding.y == undefined) {
-                options.viewPadding.y = 0;
-            }
+        if (!options.viewPadding || (typeof options.viewPadding != "number" &&
+            typeof options.viewPadding != "object")) {
+            options.viewPadding = 0;
         }
+        if (typeof options.viewPadding == "number") {
+            options.viewPadding = {
+                left: options.viewPadding,
+                right:options.viewPadding,
+                top: options.viewPadding,
+                bottom: options.viewPadding
+            };
+        }
+        options.viewPadding.left = options.viewPadding.left || options.viewPadding.x || 0;
+        options.viewPadding.right = options.viewPadding.right || options.viewPadding.x || 0;
+        options.viewPadding.top = options.viewPadding.top || options.viewPadding.y || 0;
+        options.viewPadding.bottom = options.viewPadding.bottom || options.viewPadding.y || 0;
 
         var dirStr = "";
         if (options.direction.x === true) dirStr = "horizontal";
@@ -111,10 +117,10 @@
             };
 
             var rel = {
-                top: dim.e.rect.top - (dim.s.rect.top + dim.s.border.top) - options.viewPadding.y,
-                bottom: dim.s.rect.bottom - dim.s.border.bottom - dim.s.scrollbar.bottom - dim.e.rect.bottom - options.viewPadding.y,
-                left: dim.e.rect.left - (dim.s.rect.left + dim.s.border.left) - options.viewPadding.x,
-                right: dim.s.rect.right - dim.s.border.right - dim.s.scrollbar.right - dim.e.rect.right - options.viewPadding.x
+                top: dim.e.rect.top - (dim.s.rect.top + dim.s.border.top) - options.viewPadding.top,
+                bottom: dim.s.rect.bottom - dim.s.border.bottom - dim.s.scrollbar.bottom - dim.e.rect.bottom - options.viewPadding.bottom,
+                left: dim.e.rect.left - (dim.s.rect.left + dim.s.border.left) - options.viewPadding.left,
+                right: dim.s.rect.right - dim.s.border.right - dim.s.scrollbar.right - dim.e.rect.right - options.viewPadding.right
             };
 
             var animProperties = {};
