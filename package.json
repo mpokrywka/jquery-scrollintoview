@@ -1,6 +1,6 @@
 {
   "name": "jquery.scrollintoview",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "jQuery scrollintoview() plugin and :scrollable selector filter",
   "main": "jquery.scrollintoview.js",
   "dependencies": {

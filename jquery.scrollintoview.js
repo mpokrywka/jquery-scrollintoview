@@ -1,7 +1,7 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 2.0.1 (19 May 2016)
+ * Version 2.0.2 (19 May 2016)
  * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
@@ -111,10 +111,10 @@
             };
 
             var rel = {
-                top: dim.e.rect.top - (dim.s.rect.top + dim.s.border.top),
-                bottom: dim.s.rect.bottom - dim.s.border.bottom - dim.s.scrollbar.bottom - dim.e.rect.bottom,
-                left: dim.e.rect.left - (dim.s.rect.left + dim.s.border.left),
-                right: dim.s.rect.right - dim.s.border.right - dim.s.scrollbar.right - dim.e.rect.right
+                top: dim.e.rect.top - (dim.s.rect.top + dim.s.border.top) - options.viewPadding.y,
+                bottom: dim.s.rect.bottom - dim.s.border.bottom - dim.s.scrollbar.bottom - dim.e.rect.bottom - options.viewPadding.y,
+                left: dim.e.rect.left - (dim.s.rect.left + dim.s.border.left) - options.viewPadding.x,
+                right: dim.s.rect.right - dim.s.border.right - dim.s.scrollbar.right - dim.e.rect.right - options.viewPadding.x
             };
 
             var animProperties = {};
@@ -122,12 +122,12 @@
             // vertical scroll
             if (options.direction.y === true) {
                 if (rel.top < 0) {
-                    animProperties.scrollTop = Math.max(0, dim.s.scroll.top + rel.top - options.viewPadding.y);
+                    animProperties.scrollTop = Math.max(0, dim.s.scroll.top + rel.top);
                 } else if (rel.top > 0) {
                     if (options.alwaysTop) {
-                        animProperties.scrollTop = Math.min(dim.s.scroll.top + rel.top - options.viewPadding.y, dim.s.scroll.maxtop);
+                        animProperties.scrollTop = Math.min(dim.s.scroll.top + rel.top, dim.s.scroll.maxtop);
                     } else if (rel.bottom < 0) {
-                        animProperties.scrollTop = Math.min(dim.s.scroll.top + Math.min(rel.top, -rel.bottom) - options.viewPadding.y, dim.s.scroll.maxtop);
+                        animProperties.scrollTop = Math.min(dim.s.scroll.top + Math.min(rel.top, -rel.bottom), dim.s.scroll.maxtop);
                     }
                 }
             }
@@ -135,12 +135,12 @@
             // horizontal scroll
             if (options.direction.x === true) {
                 if (rel.left < 0) {
-                    animProperties.scrollLeft = Math.max(0, dim.s.scroll.left + rel.left - options.viewPadding.x);
+                    animProperties.scrollLeft = Math.max(0, dim.s.scroll.left + rel.left);
                 } else if (rel.left > 0) {
                     if (options.alwaysLeft) {
-                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + rel.left - options.viewPadding.x, dim.s.scroll.maxleft);
+                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + rel.left, dim.s.scroll.maxleft);
                     } else if (rel.right < 0) {
-                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + Math.min(rel.left, -rel.right) - options.viewPadding.x, dim.s.scroll.maxleft);
+                        animProperties.scrollLeft = Math.min(dim.s.scroll.left + Math.min(rel.left, -rel.right), dim.s.scroll.maxleft);
                     }
                 }
             }
