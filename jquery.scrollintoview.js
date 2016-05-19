@@ -1,7 +1,7 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 2.0.0 (18 May 2016)
+ * Version 2.0.1 (19 May 2016)
  * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
@@ -157,12 +157,12 @@
 
                 function animateStep(now, tween) {
                     scrollExpect[tween.prop] = Math.floor(now);
-                };
+                }
 
                 var scroll_complete = true;
                 function onscroll(event) {
                     $.each(scrollExpect, function(key, value) {
-                        if (Math.floor(scrollListener[key]()) != Math.floor(value)) {
+                        if (Math.abs(value - scrollListener[key]()) > 1) {
                             scroll_complete = false;
                             scroller.stop('scrollintoview');
                         }
@@ -183,7 +183,7 @@
                         scrollListener.off('scroll', onscroll);
                         $.isFunction(options.complete) && options.complete.call(scroller[0], scroll_complete);
                         next();
-                    })
+                    });
 
                 scroller.dequeue('scrollintoview');
             } else {
