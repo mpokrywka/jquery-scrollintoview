@@ -1,7 +1,7 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 2.0.3 (19 May 2016)
+ * Version 2.0.4 (20 May 2016)
  * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
@@ -110,6 +110,19 @@
         // check if there's anything to scroll in the first place
         if (scroller.length > 0) {
             scroller = scroller.eq(0);
+
+            if (options.useMarginLeft) {
+                options.viewPadding.left = options.viewPadding.left + (parseFloat(el.css('marginLeft')) || 0);
+            }
+            if (options.useMarginRight) {
+                options.viewPadding.right = options.viewPadding.right + (parseFloat(el.css('marginRight')) || 0);
+            }
+            if (options.useMarginTop) {
+                options.viewPadding.top = options.viewPadding.top + (parseFloat(el.css('marginTop')) || 0);
+            }
+            if (options.useMarginBottom) {
+                options.viewPadding.bottom = options.viewPadding.bottom + (parseFloat(el.css('marginBottom')) || 0);
+            }
 
             var dim = {
                 e: dimensions(el),
