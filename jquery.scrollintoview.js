@@ -1,7 +1,7 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 2.0.4 (20 May 2016)
+ * Version 2.0.5 (4 Jun 2016)
  * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
@@ -28,6 +28,35 @@
     };
 
     var rootrx = /^(?:html)$/i;
+
+    // Adapted from: https://mths.be/scrollingelement v1.5.1 by @diegoperini & @mathias | MIT license */
+    // Note: standards mode / quirks mode can be toggled at runtime via
+    // `document.write`.
+    var isCompliantCached;
+    function scrollingElement() {
+        if (document.scrollingElement) {
+            return document.scrollingElement;
+        }
+        var isStandardsMode = /^CSS1/.test(document.compatMode);
+        if (!isStandardsMode) {
+            // In quirks mode, the result is equivalent to the non-compliant
+            // standards mode behavior.
+            return 'body';
+        }
+        if (isCompliantCached === void 0) {
+            // When called for the first time, check whether the browser is
+            // standard-compliant, and cache the result.
+            var iframe = document.createElement('iframe');
+            iframe.style.height = '1px';
+            (document.body || document.documentElement || document).appendChild(iframe);
+            var doc = iframe.contentWindow.document;
+            doc.write('<!DOCTYPE html><div style="height:9999em">x</div>');
+            doc.close();
+            isCompliantCached = doc.documentElement.scrollHeight > doc.body.scrollHeight;
+            iframe.parentNode.removeChild(iframe);
+        }
+        return isCompliantCached ? 'html' : 'body';
+    };
 
     // gets border dimensions
     var borders = function(domElement, styles) {
@@ -170,12 +199,12 @@
                     scrollListener = scroller;
 
                 if (rootrx.test(scroller[0].nodeName)) {
-                    scroller = $("html,body");
+                    scroller = $(scrollingElement());
                     scrollListener = $(window);
                 }
 
                 function animateStep(now, tween) {
-                    scrollExpect[tween.prop] = Math.floor(now);
+                    scrollExpect[tween.prop] = now;
                 }
 
                 var scroll_complete = true;
@@ -197,7 +226,6 @@
                         step: animateStep,
                         queue: 'scrollintoview'
                     })
-                    .eq(0) // we want function to be called just once (ref. "html,body")
                     .queue('scrollintoview', function(next) {
                         scrollListener.off('scroll', onscroll);
                         $.isFunction(options.complete) && options.complete.call(scroller[0], scroll_complete);
