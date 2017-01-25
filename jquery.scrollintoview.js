@@ -1,7 +1,7 @@
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
- * Version 2.0.5 (4 Jun 2016)
+ * Version 2.0.6 (25 Jan 2017)
  * Requires jQuery 1.8 or newer
  *
  * Copyright (c) 2011 Robert Koritnik
@@ -9,7 +9,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-!function(root, factory) {
+(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
         define(['jquery'], factory);
     } else if (typeof exports === 'object') {
@@ -17,8 +17,7 @@
     } else {
         factory(root.jQuery);
     }
-}
-(this, function($) {
+})(this, function($) {
     var converter = {
         vertical: { x: false, y: true },
         horizontal: { x: true, y: false },
@@ -46,12 +45,31 @@
         if (isCompliantCached === void 0) {
             // When called for the first time, check whether the browser is
             // standard-compliant, and cache the result.
-            var iframe = document.createElement('iframe');
+            var iframe = document.createElement('iframe'), doc;
             iframe.style.height = '1px';
             (document.body || document.documentElement || document).appendChild(iframe);
-            var doc = iframe.contentWindow.document;
-            doc.write('<!DOCTYPE html><div style="height:9999em">x</div>');
-            doc.close();
+            try {
+                doc = (iframe.contentWindow && iframe.contentWindow.document) || iframe.contentDocument;
+            } catch (e) {
+                if (e.number == -2147024891) {
+                    // IE issue with dynamic iframe after document.domain is set
+                    // http://www.kochan.io/javascript/how-to-dynamically-create-an-iframe.html
+                    // http://stackoverflow.com/questions/1886547/access-is-denied-javascript-error-when-trying-to-access-the-document-object-of
+                    try {
+                        iframe.id = 'scrollingElement' + (+new Date);
+                        iframe.src = 'javascript:void((function(d){d.open();d.domain="' +
+                          document.domain + '";d.close()})(document))';
+                        doc = (iframe.contentWindow && iframe.contentWindow.document) || iframe.contentDocument;
+                    } catch (e) {
+                    }
+                }
+            }
+            if (doc) {
+                doc.write('<!DOCTYPE html><div style="height:9999em">x</div>');
+                doc.close();
+            } else {
+                doc = document;
+            }
             isCompliantCached = doc.documentElement.scrollHeight > doc.body.scrollHeight;
             iframe.parentNode.removeChild(iframe);
         }
